@@ -11,7 +11,7 @@ WORKDIR /build
 RUN CGO_ENABLED=0 GOOS=linux go build -a -o dnsconfig-injector .
 
 # final stage
-FROM scratch
+FROM gcr.io/distroless/static@sha256:5759d194607e472ff80fff5833442d3991dd89b219c96552837a2c8f74058617
 WORKDIR /app
 COPY --from=build-env /build/dnsconfig-injector /app/
 
