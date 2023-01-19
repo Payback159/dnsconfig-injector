@@ -8,7 +8,7 @@ webhooks:
   - name: {{ include "dnsconfiginjector.fullname" . }}.{{ .Release.Namespace }}.svc
     clientConfig:
       service:
-        name: {{ include "dnsconfiginjector.fullname" . }}-webhook-svc
+        name: {{ include "dnsconfiginjector.fullname" . }}
         namespace: {{ .Release.Namespace }}
         path: "/mutate"
       caBundle: ""
