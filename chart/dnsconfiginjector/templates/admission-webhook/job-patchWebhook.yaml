@@ -1,0 +1,36 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name:  {{ include "dnsconfiginjector.fullname" . }}-admission-patch
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded   
+  labels:
+    {{- include "dnsconfiginjector.labels" . | nindent 4 }}
+spec:
+  template:
+    metadata:
+      name:  {{ include "dnsconfiginjector.fullname" . }}-admission-patch
+      labels:
+        app: {{ include "dnsconfiginjector.fullname" . }}-admission-patch
+    spec:
+      containers:
+        - name: patch
+          image: registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.3.0
+          imagePullPolicy: IfNotPresent
+          args:
+            - patch
+            - --webhook-name={{ include "dnsconfiginjector.fullname" . }}-admission
+            - --namespace={{- .Release.Namespace }}
+            - --patch-validating=false
+            - --secret-name={{ include "dnsconfiginjector.fullname" . }}-admission
+            - --patch-failure-policy={{ .Values.admissionWebhooks.failurePolicy }}
+          resources:
+{{ toYaml .Values.admissionWebhooks.resources | indent 12 }}
+      restartPolicy: OnFailure
+      serviceAccountName: {{ include "dnsconfiginjector.fullname" . }}-admission
+      securityContext:
+        runAsGroup: 2000
+        runAsNonRoot: true
+        runAsUser: 2000
