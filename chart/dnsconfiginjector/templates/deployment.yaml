@@ -32,10 +32,11 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args:
+            - /app/dnsconfig-injector
             - -dnsCfgFile=/etc/webhook/config/dnsconfig.yaml
             - -tlsCertFile=/etc/webhook/certs/cert
             - -tlsKeyFile=/etc/webhook/certs/key
-            - -alsologtostderr
+            - -logtostderr
             - -v=4
             - 2>&1
           ports:
