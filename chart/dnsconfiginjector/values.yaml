@@ -5,7 +5,7 @@
 replicaCount: 1
 
 admissionWebhooks:
-  failurePolicy: Fail
+  failurePolicy: Ignore
   resources: {}
 
 dnsconfig: |
